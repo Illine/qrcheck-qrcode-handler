@@ -1,0 +1,83 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        temp.use_jdbc_metadata_defaults: false
+        default_schema: qrcodes
+    open-in-view: false
+  data:
+    jpa:
+      repositories:
+        bootstrap-mode: default
+  datasource:
+    url: {{ spring.datasource.url }}
+    username: {{ spring.datasource.username }}
+    password: "${DATABASE_PASSWORD}"
+    driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      driver-class-name: org.postgresql.Driver
+      jdbc-url: {{ liquibase.url }}
+      username: {{ spring.datasource.username }}
+      password: "${DATABASE_PASSWORD}"
+      pool-name: {{ spring.datasource.hikari.pool_name | default('HikariPool') }}
+      max-lifetime: {{ spring.datasource.hikari.max_lifetime | default(600000) }}
+      connection-timeout: {{ spring.datasource.hikari.connection_timeout | default(15000) }}
+      maximum-pool-size: {{ spring.datasource.hikari.maximum_pool_size | default(10) }}
+      idle-timeout: {{ spring.datasource.hikari.pool_name | default(200000) }}
+      minimum-idle: {{ spring.datasource.hikari.idle_timeout | default(2) }}
+      schema: qrcodes
+  liquibase:
+    enabled: false
+  groovy:
+    template:
+      check-template-location: false
+  sleuth:
+      jdbc:
+        p6spy:
+          enabled: {{ spring.sleuth.jdbc.p6spy.enabled | default('true') | lower }}
+          enable-logging: {{ spring.sleuth.jdbc.p6spy.enable_logging | default('true') | lower }}
+          tracing:
+            include-parameter-values: {{ spring.sleuth.jdbc.p6spy.tracing.include_parameter_values | default('true') | lower }}
+  security:
+    qrcheck:
+      api-key:
+        hasApiKeyAuth: {{ spring.security.api_key.has_api_key_auth | default('true') | lower }}
+        token:
+          outgoing: ${API_KEY_OUTGOING}
+          incoming: ${API_KEY_INCOMING}
+
+springdoc:
+  api-docs:
+    path: "/swagger-api"
+    enabled: {{ springdoc.api_docs.enabled | default('false') | lower }}
+  swagger-ui:
+    path: "/"
+  info:
+    title: QRCode Handler RESTful API
+    description: Сервис для работы с qrcode
+    version: {{ lookup('env', 'DOCKER_VERSION') | default('unknown') }}
+    licence-url: https://qrchk.ru/licence
+    owner-name: QRCheck
+    owner-url: https://qrchk.ru
+    owner-email: it.support@softdarom.ru
+
+outbound:
+  feign:
+    content-handler:
+      host: "http://content-handler:8000"
+
+logging:
+  config: config/logback.groovy
+
+logbook:
+  strategy: {{ logbook.strategy | default('body-only-if-status-at-least') }}
+  minimum-status: {{ logbook.minimum_status | default(200) }}
+  format:
+    style: {{ logbook.format.style | default('http') }}
+  logger:
+    name: REST
+  exclude: {{ logbook.exclude | join(', ') }}

@@ -1,0 +1,14 @@
+work_dir: "/opt/qrcode-handler"
+
+application:
+  name: qrcode-handler
+  port:
+    tcp:
+      name: tcp
+      number: 8000
+    actuator:
+      name: actuator
+      number: 7000
+  path:
+    config: "{{ work_dir }}/config"
+    logs: "{{ work_dir }}/logs"

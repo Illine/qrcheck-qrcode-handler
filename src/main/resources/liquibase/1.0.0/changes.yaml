@@ -1,0 +1,22 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1.0.0
+      author: eekovtun
+      comment: Database Initial
+      changes:
+        - tagDatabase:
+            tag: 1.0.0
+
+  - include:
+      file: ddl/01_qrcodes.sql
+      relativeToChangelogFile: true
+
+  - include:
+      file: grant/01_qrcode_handler.sql
+      relativeToChangelogFile: true
+  - include:
+      file: grant/02_editor.sql
+      relativeToChangelogFile: true
+  - include:
+      file: grant/03_viewer.sql
+      relativeToChangelogFile: true

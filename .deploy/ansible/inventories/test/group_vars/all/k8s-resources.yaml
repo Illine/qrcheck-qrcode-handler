@@ -1,0 +1,12 @@
+resources:
+  requests:
+    cpu: 250m
+    memory: 512Mi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  java_opts:
+    - "-XX:+UseContainerSupport"
+    - "-XX:+AlwaysActAsServerClassMachine"
+    - "--illegal-access=deny"
+    - "--add-opens java.base/java.lang.invoke=ALL-UNNAMED"

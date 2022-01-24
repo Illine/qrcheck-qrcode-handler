@@ -1,11 +1,11 @@
 spring:
-  application:
-    forward-headers-strategy: framework
   security:
     qrcheck:
       api-key:
+        hasApiKeyAuth: true
         token:
           outgoing: ${API_KEY_OUTGOING}
+          incoming: ${API_KEY_INCOMING}
       oauth2:
         auth-server:
           host: ${AUTH_HANDLER_URL}
@@ -69,6 +69,11 @@ springdoc:
     owner-name: QRCheck
     owner-url: https://qrchk.ru
     owner-email: it.support@softdarom.ru
+
+outbound:
+  feign:
+    content-handler:
+      host: "${CONTENT_HANDLER_URL}"
 
 logbook:
   strategy: body-only-if-status-at-least
