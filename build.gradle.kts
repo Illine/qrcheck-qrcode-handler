@@ -162,4 +162,11 @@ tasks.register<Zip>("liquibaseChangelogArchive") {
     archiveFileName.set("liquibase.zip")
     destinationDirectory.set(file("$buildDir"))
 }
-tasks.getByName("build").finalizedBy("liquibaseChangelogArchive")
+
+tasks.register<Zip>("deployConfigsArchive") {
+    from(".deploy")
+    archiveFileName.set("deploy.zip")
+    destinationDirectory.set(file("$buildDir"))
+}
+
+tasks.getByName("assemble").finalizedBy("liquibaseChangelogArchive", "deployConfigsArchive")
